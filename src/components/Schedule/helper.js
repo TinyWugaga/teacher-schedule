@@ -1,3 +1,4 @@
+//TODO:delete
 /**
  * 轉換 Date 物件成日期字串
  *
@@ -6,9 +7,9 @@
  */
 export function formatDateToString(dateObject) {
 
-    let year  = dateObject.getFullYear();
+    let year = dateObject.getFullYear();
     let month = dateObject.getMonth() + 1;
-    let date  = dateObject.getDate();
+    let date = dateObject.getDate();
 
     return `${year}/${month}/${date}`
 }
@@ -48,4 +49,64 @@ export function getWeeks() {
             return new Date(date)
         });
     return weeks
+}
+
+/**
+ * 
+ * 
+ * @param  {Object} schedule
+ * @return {Array}
+ */
+export function getScheduleList(schedule) {
+    return getTimeList((formattedSchedule(schedule)));
+}
+
+/**
+ * 轉換行事曆資料格式
+ * 
+ * @param  {Object} schedule
+ * @return {Array}
+ */
+export function formattedSchedule(schedule) {
+    return Object.keys(schedule).map(state => {
+        let stateSchedule = schedule[state];
+
+        Object.values(stateSchedule).map(event => {
+            return {
+                start: new Date(event.start),
+                end: new Date(event.end),
+                state: state
+            }
+        });
+    });
+}
+
+/**
+ * 獲取行事曆時程列表
+ * 
+ * @param  {Object} schedule
+ * @return {Array}
+ */
+export function getTimeList(schedule) {
+    let timeList = [];
+
+    Object.values(schedule).map(event => {
+        let startTime = event.start;
+        let endTime = event.end;
+
+        let duration = startTime.getTime() - endTime.getTime();
+        let durationInMintues = -Math.floor(duration / 1000 / 60);
+
+        Array(durationInMintues / 30)
+            .fill(null)
+            .map((count) => {
+                let plusTime = 30 * 60 * 1000 * count;
+                let startTimeStamp = startTime.getTime();
+                let timeStamp = startTimeStamp + plusTime;
+
+                timeList.push({ time: new Date(timeStamp), state: event.state });
+            });
+    });
+
+    return timeList;
 }

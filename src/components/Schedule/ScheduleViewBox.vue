@@ -55,17 +55,15 @@ export default {
         let duration = startTime.getTime() - endTime.getTime();
         let durationInMintues = -Math.floor(duration / 1000 / 60);
 
-        let eventTimeList = Array(durationInMintues / 30)
+        Array(durationInMintues / 30)
           .fill(null)
-          .map((n, count) => {
+          .map((count) => {
             let plusTime = 30 * 60 * 1000 * count;
             let startTimeStamp = startTime.getTime();
             let timeStamp = startTimeStamp + plusTime;
 
-            return { time: new Date(timeStamp), state: event.state };
+            timeList.push({ time: new Date(timeStamp), state: event.state });
           });
-
-        timeList = { ...timeList, ...eventTimeList };
       });
 
       return timeList;

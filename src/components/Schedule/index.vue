@@ -21,7 +21,7 @@
 import ScheduleControl from "./ScheduleControl";
 import ScheduleViewBox from "./ScheduleViewBox";
 import { getWeeksByDate, formattedSchedule, getTimeList } from "./helper.js";
-import { fetch } from "../../utils/schedule.js";
+import * as api from "../../utils/schedule";
 
 export default {
   name: "Schedule",
@@ -29,17 +29,36 @@ export default {
     ScheduleControl,
     ScheduleViewBox
   },
+  props: {
+    date: { type: Date, default: () => new Date(2020,4,3) },
+  },
   data() {
-    let currentDate = new Date();
+    let currentDate = this.date;
     let weeks = getWeeksByDate(currentDate);
 
     return {
       currentDate,
       weeks,
-      schedule: fetch()
+      schedule:[]
     };
   },
+  mounted() {
+    this.fetch();
+  },
   methods: {
+    fetch(startAt = null) {
+      if (startAt) {
+        this.currentDate = startAt;
+      } else {
+        startAt = this.currentDate;
+      }
+
+      api.fetch({started_at: startAt})
+        .then((res) => {
+          console.log('res: ',res);
+          this.schedule = res;
+        })
+    },
     getDateSchedule(date) {
       let schedule = formattedSchedule(this.schedule);
       let timeList = getTimeList(schedule);
@@ -62,7 +81,16 @@ export default {
       currentDate.setDate(currentDate.getDate() + 7);
       this.currentDate = currentDate;
       this.weeks = getWeeksByDate(currentDate);
+    },
+    getPrevWeeks() {
+      //let today = new Date();
+
+      let currentDate = this.currentDate;
+      currentDate.setDate(currentDate.getDate() - 7);
+
+      this.weeks = getWeeksByDate(currentDate);
     }
+
   }
 };
 </script>

@@ -11,6 +11,7 @@
           plain
           size="mini"
           icon="el-icon-arrow-right"
+          @click="getNextWeek"
         ></el-button>
       </el-button-group>
     </div>
@@ -29,7 +30,8 @@ export default {
   components: {},
   props: {
     weeks: { default: null },
-    timeZone: { default: null }
+    timeZone: { default: null },
+    getNextWeek: { default: null }
   },
   computed: {
     formattedDateTitle() {

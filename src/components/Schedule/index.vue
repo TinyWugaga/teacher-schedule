@@ -3,7 +3,7 @@
     <h3 class="section-title">授課時間</h3>
     <div class="section-body">
       <div class="schedule">
-        <schedule-control :weeks="weeks" />
+        <schedule-control :weeks="weeks" :getNextWeek="getNextWeeks"/>
         <div class="schedule-view">
           <schedule-view-box
             v-for="(date, index) in weeks"
@@ -20,7 +20,7 @@
 <script>
 import ScheduleControl from "./ScheduleControl";
 import ScheduleViewBox from "./ScheduleViewBox";
-import { getWeeks, formattedSchedule, getTimeList } from "./helper.js";
+import { getWeeksByDate, formattedSchedule, getTimeList } from "./helper.js";
 import { fetch } from "../../utils/schedule.js";
 
 export default {
@@ -30,11 +30,12 @@ export default {
     ScheduleViewBox
   },
   data() {
-    let today = new Date();
+    let currentDate = new Date();
+    let weeks = getWeeksByDate(currentDate);
 
     return {
-      today,
-      weeks: getWeeks(),
+      currentDate,
+      weeks,
       schedule: fetch()
     };
   },
@@ -43,12 +44,10 @@ export default {
       let schedule = formattedSchedule(this.schedule);
       let timeList = getTimeList(schedule);
 
-      console.log("event: ", timeList);
-
       let dateSchedule = [];
       Object.values(timeList).map(event => {
         let time = event.time;
-        if(this.isSameDay(time, date)) {
+        if (this.isSameDay(time, date)) {
           dateSchedule.push(event);
         }
       });
@@ -57,6 +56,12 @@ export default {
     },
     isSameDay(timeA, timeB) {
       return timeA.toDateString() === timeB.toDateString();
+    },
+    getNextWeeks() {
+      let currentDate = this.currentDate;
+      currentDate.setDate(currentDate.getDate() + 7);
+      this.currentDate = currentDate;
+      this.weeks = getWeeksByDate(currentDate);
     }
   }
 };
@@ -68,9 +73,9 @@ body {
   margin: auto;
 }
 .section-title {
-    font-size: 20px;
-    font-weight: 500;
-    margin-bottom: 20px;
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: 20px;
 }
 .section-body {
   min-height: 400px;

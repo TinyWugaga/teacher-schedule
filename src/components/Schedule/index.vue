@@ -9,7 +9,7 @@
             v-for="(date, index) in weeks"
             :key="index"
             :date="date"
-            :schedule="getThisDateSchedule(date)"
+            :schedule="getDateSchedule(date)"
           />
         </div>
       </div>
@@ -20,7 +20,7 @@
 <script>
 import ScheduleControl from "./ScheduleControl";
 import ScheduleViewBox from "./ScheduleViewBox";
-import { getWeeks } from "./helper.js";
+import { getWeeks, formattedSchedule, getTimeList } from "./helper.js";
 import { fetch } from "../../utils/schedule.js";
 
 export default {
@@ -28,26 +28,6 @@ export default {
   components: {
     ScheduleControl,
     ScheduleViewBox
-  },
-  computed: {
-    formattedSchedule() {
-      let schedule = this.schedule;
-      let scheduleList = [];
-
-      for (var state in schedule) {
-        let stateSchedule = schedule[state];
-
-        Object.values(stateSchedule).map( event => {
-          scheduleList.push({
-            start: new Date(event.start),
-            end: new Date(event.end),
-            state: state
-          });
-        });
-      }
-
-      return scheduleList;
-    },
   },
   data() {
     let today = new Date();
@@ -59,35 +39,25 @@ export default {
     };
   },
   methods: {
-    getThisDateSchedule(date) {
-      let schedule = this.formattedSchedule;
-      let dateSchedule = this.getDateSchedule(date, schedule);
+    getDateSchedule(date) {
+      let schedule = formattedSchedule(this.schedule);
+      let timeList = getTimeList(schedule);
 
-      return dateSchedule;
-    },
-    getDateSchedule(date, schedule) {
-      let events = [];
+      console.log("event: ", timeList);
 
-      Object.values(schedule).map( event => {
-        let startTime = new Date(event.start);
-
-        if (this.isSameDay(startTime, date)) {
-          events.push(event);
+      let dateSchedule = [];
+      Object.values(timeList).map(event => {
+        let time = event.time;
+        if(this.isSameDay(time, date)) {
+          dateSchedule.push(event);
         }
       });
 
-      events = this.sortEventsByTime(events);
-
-      return events;
+      return dateSchedule;
     },
     isSameDay(timeA, timeB) {
       return timeA.toDateString() === timeB.toDateString();
-    },
-    sortEventsByTime(events) {
-      return events.sort((a, b) => {
-        return a.start > b.start ? 1 : -1;
-      });
-    },
+    }
   }
 };
 </script>
@@ -96,6 +66,11 @@ export default {
 body {
   max-width: 1440px;
   margin: auto;
+}
+.section-title {
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 20px;
 }
 .section-body {
   min-height: 400px;

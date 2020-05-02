@@ -6,7 +6,7 @@
         <div>{{ formattedDate }}</div>
       </div>
       <div class="box-cloumn__content text-center">
-        <time-list v-for="(time, key) in timeList" :key="key" :time="time" />
+        <time-list v-for="(time, key) in schedule" :key="key" :time="time" />
       </div>
     </div>
   </div>
@@ -38,37 +38,6 @@ export default {
       );
     }
   },
-  data() {
-    let schedule = this.schedule;
-    let timeList = this.getTimeList(schedule);
-
-    return { timeList };
-  },
-  methods: {
-    getTimeList(schedule) {
-      let timeList = [];
-
-      Object.values(schedule).map(event => {
-        let startTime = event.start;
-        let endTime = event.end;
-
-        let duration = startTime.getTime() - endTime.getTime();
-        let durationInMintues = -Math.floor(duration / 1000 / 60);
-
-        Array(durationInMintues / 30)
-          .fill(null)
-          .map((count) => {
-            let plusTime = 30 * 60 * 1000 * count;
-            let startTimeStamp = startTime.getTime();
-            let timeStamp = startTimeStamp + plusTime;
-
-            timeList.push({ time: new Date(timeStamp), state: event.state });
-          });
-      });
-
-      return timeList;
-    }
-  }
 };
 </script>
 

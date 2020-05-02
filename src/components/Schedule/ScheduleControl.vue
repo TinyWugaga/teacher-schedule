@@ -5,13 +5,11 @@
         <el-button
           plain
           size="mini"
-          type="primary"
           icon="el-icon-arrow-left"
         ></el-button>
         <el-button
           plain
           size="mini"
-          type="primary"
           icon="el-icon-arrow-right"
         ></el-button>
       </el-button-group>

@@ -52,33 +52,27 @@ export function getWeeks() {
 }
 
 /**
- * 
- * 
- * @param  {Object} schedule
- * @return {Array}
- */
-export function getScheduleList(schedule) {
-    return getTimeList((formattedSchedule(schedule)));
-}
-
-/**
  * 轉換行事曆資料格式
  * 
  * @param  {Object} schedule
  * @return {Array}
  */
 export function formattedSchedule(schedule) {
-    return Object.keys(schedule).map(state => {
+    let newSchedule = [];
+
+    Object.keys(schedule).map(state => {
         let stateSchedule = schedule[state];
 
         Object.values(stateSchedule).map(event => {
-            return {
+            newSchedule.push({
                 start: new Date(event.start),
                 end: new Date(event.end),
                 state: state
-            }
+            });
         });
     });
+
+    return newSchedule
 }
 
 /**
@@ -95,11 +89,11 @@ export function getTimeList(schedule) {
         let endTime = event.end;
 
         let duration = startTime.getTime() - endTime.getTime();
-        let durationInMintues = -Math.floor(duration / 1000 / 60);
+        let durationInMinutes = -Math.floor(duration / 1000 / 60);
 
-        Array(durationInMintues / 30)
+        Array(durationInMinutes / 30)
             .fill(null)
-            .map((count) => {
+            .map((n, count) => {
                 let plusTime = 30 * 60 * 1000 * count;
                 let startTimeStamp = startTime.getTime();
                 let timeStamp = startTimeStamp + plusTime;
@@ -108,5 +102,17 @@ export function getTimeList(schedule) {
             });
     });
 
-    return timeList;
+    return sortTimeList(timeList);
+}
+
+/**
+ * 依照時間排序行事曆時程列表
+ * 
+ * @param  {Object} timeList
+ * @return {Array}
+ */
+function sortTimeList(timeList) {
+    return timeList.sort((a, b) => {
+        return a.time > b.time ? 1 : -1;
+    });
 }

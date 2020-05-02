@@ -16,15 +16,9 @@ export default {
   computed: {
     formattedTime() {
       let time = this.time.time;
-     /* 
-      toLocaleTimeString([], {
-        hour12: false,
-        hour: "2-digit",
-        minute: "2-digit"
-      });
-      */
-     let hour = (time.getHours() < 10 ? '0' : '') + time.getHours();
-     let minute = (time.getMinutes() < 10 ? '0' : '') + time.getMinutes();
+
+      let hour = (time.getHours() < 10 ? "0" : "") + time.getHours();
+      let minute = (time.getMinutes() < 10 ? "0" : "") + time.getMinutes();
 
       return `${hour}:${minute}`;
     }

@@ -1,7 +1,7 @@
 <template>
   <div class="section section--schedule">
     <h3 class="section-title">
-      <span>授課時間</span>
+      <span>{{ $t('title') }}</span>
     </h3>
     <div class="section-body">
       <div class="schedule">
@@ -26,6 +26,7 @@
 <script>
 import ScheduleControl from "./ScheduleControl";
 import ScheduleViewBox from "./ScheduleViewBox";
+import { setLocale } from '../../utils/i18n';
 import * as helper from "./helper.js";
 import * as api from "../../api/schedule";
 
@@ -50,6 +51,12 @@ export default {
   },
   mounted() {
     this.fetch();
+
+    let lang = new URLSearchParams(location.search).get('lang');
+    console.log(lang);
+    if (lang) {
+      setLocale(lang);
+    }
   },
   methods: {
     fetch(startAt = null) {

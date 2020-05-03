@@ -1,5 +1,6 @@
 
 module.exports = {
+  title: '授課時間',
   weeks: {
     sun: '日',
     mon: '一',

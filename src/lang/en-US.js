@@ -1,5 +1,6 @@
 
 module.exports = {
+  title: 'Available Time',
   weeks: {
     sun: 'Sun',
     mon: 'Mon',

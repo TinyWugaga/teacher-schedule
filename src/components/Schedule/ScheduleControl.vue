@@ -21,7 +21,9 @@
       {{ formattedDateTitle }}
     </div>
     <div class="schedule-control-time-zone">
-      <span>{{ $t('schedule.timezone-description', [timeZoneToSring,'']) }}</span>
+      <span>{{
+        $t("schedule.timezone-description", [timeZoneToSring, timezoneAbbreviation])
+      }}</span>
     </div>
   </div>
 </template>
@@ -33,7 +35,7 @@ export default {
   name: "ScheduleControl",
   components: {},
   props: {
-    weeks: { default: null },
+    weeks: { default: null }
   },
   computed: {
     formattedDateTitle() {
@@ -54,11 +56,12 @@ export default {
     },
     timeZoneToSring() {
       let timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      console.log(timeZone);
-      let dateInfo = new Date().toString().split(" ");
-      let timeZoneArea = dateInfo[6];
-      return `${timeZoneArea}(${dateInfo[5]})`;
-    }
+      timeZone = timeZone.split("/");
+      return timeZone[timeZone.length - 1]
+    },
+    timezoneAbbreviation() {
+      return new Date().toString().match(/([A-Z]+[\\+-][0-9]+)/)[1];
+    },
   }
 };
 </script>

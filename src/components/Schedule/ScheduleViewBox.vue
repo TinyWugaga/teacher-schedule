@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import TimeList from '../../units/TimeList';
+import TimeList from '../TimeList';
 import { getDateWithoutTime } from './helper.js'
 
 export default {

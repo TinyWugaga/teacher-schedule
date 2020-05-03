@@ -1,9 +1,15 @@
 <template>
-  <div class="section--schedule">
-    <h3 class="section-title">授課時間</h3>
+  <div class="section section--schedule">
+    <h3 class="section-title">
+      <span>授課時間</span>
+    </h3>
     <div class="section-body">
       <div class="schedule">
-        <schedule-control :weeks="weeks" :getNextWeek="getNextWeeks"/>
+        <schedule-control
+          :weeks="weeks"
+          @getNextWeeks="getNextWeeks"
+          @getPreviousWeeks="getPreviousWeeks"
+        />
         <div class="schedule-view">
           <schedule-view-box
             v-for="(date, index) in weeks"
@@ -20,8 +26,8 @@
 <script>
 import ScheduleControl from "./ScheduleControl";
 import ScheduleViewBox from "./ScheduleViewBox";
-import { getWeeksByDate, formattedSchedule, getTimeList } from "./helper.js";
-import * as api from "../../utils/schedule";
+import * as helper from "./helper.js";
+import * as api from "../../api/schedule";
 
 export default {
   name: "Schedule",
@@ -30,16 +36,16 @@ export default {
     ScheduleViewBox
   },
   props: {
-    date: { type: Date, default: () => new Date(2020,4,3) },
+    date: { type: Date, default: () => new Date() }
   },
   data() {
     let currentDate = this.date;
-    let weeks = getWeeksByDate(currentDate);
+    let weeks = helper.getWeeksByDate(currentDate);
 
     return {
       currentDate,
       weeks,
-      schedule:[]
+      schedule: []
     };
   },
   mounted() {
@@ -53,64 +59,46 @@ export default {
         startAt = this.currentDate;
       }
 
-      api.fetch({started_at: startAt})
-        .then((res) => {
-          console.log('res: ',res);
-          this.schedule = res;
-        })
+      this.schedule = [];
+
+      api.fetch({ started_at: startAt }).then(res => {
+        this.schedule = res;
+      });
+
+      this.weeks = helper.getWeeksByDate(startAt);
     },
     getDateSchedule(date) {
-      let schedule = formattedSchedule(this.schedule);
-      let timeList = getTimeList(schedule);
+      let schedule = helper.formattedSchedule(this.schedule);
+      let timeList = helper.getTimeList(schedule);
 
       let dateSchedule = [];
       Object.values(timeList).map(event => {
         let time = event.time;
-        if (this.isSameDay(time, date)) {
+
+        if (helper.isSameDay(time, date)) {
           dateSchedule.push(event);
         }
       });
 
       return dateSchedule;
     },
-    isSameDay(timeA, timeB) {
-      return timeA.toDateString() === timeB.toDateString();
-    },
     getNextWeeks() {
-      let currentDate = this.currentDate;
-      currentDate.setDate(currentDate.getDate() + 7);
-      this.currentDate = currentDate;
-      this.weeks = getWeeksByDate(currentDate);
+      let next = helper.getFirstDayOfNextWeek(this.currentDate);
+
+      this.fetch(next);
+
+      return next;
     },
-    getPrevWeeks() {
-      //let today = new Date();
+    getPreviousWeeks() {
+      let previous = helper.getFirstDayOfPreviousWeek(this.currentDate);
+      if (previous < helper.getFirstDayOfWeek(new Date())) return;
 
-      let currentDate = this.currentDate;
-      currentDate.setDate(currentDate.getDate() - 7);
-
-      this.weeks = getWeeksByDate(currentDate);
+      this.fetch(previous);
     }
-
   }
 };
 </script>
 
 <style lang="less">
-body {
-  max-width: 1440px;
-  margin: auto;
-}
-.section-title {
-  font-size: 20px;
-  font-weight: 500;
-  margin-bottom: 20px;
-}
-.section-body {
-  min-height: 400px;
-  position: relative;
-}
-.schedule-view {
-  padding: 15px 0;
-  display: flex;
-}
+@import "style.less";
 </style>

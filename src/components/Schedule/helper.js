@@ -1,4 +1,65 @@
 /**
+ * 取得不包含時間的 Date 物件
+ *
+ * @param  {Date} date
+ * @return {Date}
+ */
+export function getDateWithoutTime(date) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+/**
+ * 取得該週第一天日期
+ *
+ * @param  {Date} date
+ * @return {Date}
+ */
+export function getFirstDayOfWeek(date) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay());
+}
+
+/**
+ * 取得該週最後一天日期
+ *
+ * @param  {Date} date
+ * @return {Date}
+ */
+export function getLastDayOfWeek(date) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay() + 6);
+}
+
+/**
+ * 取得下週第一天日期
+ *
+ * @param  {Date} date
+ * @return {Date}
+ */
+export function getFirstDayOfNextWeek(date) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay() + 7);
+}
+
+/**
+ * 取得上週第一天日期
+ *
+ * @param  {Date} date
+ * @return {Date}
+ */
+export function getFirstDayOfPreviousWeek(date) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay() - 7);
+}
+
+/**
+ * 驗證兩個 Date 物件是否為同一日期
+ * 
+ * @param  {Date} timeA
+ * @param  {Date} timeB
+ * @return {Boolean}
+ */
+export function isSameDay(timeA, timeB) {
+    return timeA.toDateString() === timeB.toDateString();
+}
+
+/**
  * 依日期生成當週日期列表
  * 
  * @param  {Date} currentDate
@@ -6,16 +67,16 @@
  */
 export function getWeeksByDate(currentDate) {
 
-    let days = ['日', '一', '二', '三', '四', '五', '六',];
-
-    let weeks = days
-        .map((day, dayIndex) => {
+    let weeks = Array(7)
+        .fill(null)
+        .map((n, dayIndex) => {
 
             //今日日期 - (計算週期-今日週期)
+            let dateOfDay = getDateWithoutTime(new Date);
             let date = currentDate.getDate() + (dayIndex - currentDate.getDay());
-            date = currentDate.setDate(date);
+            dateOfDay.setDate(date);
 
-            return new Date(date)
+            return dateOfDay
         });
     return weeks
 }

@@ -1,12 +1,14 @@
 <template>
-  <div class="schedule-view-box box-cloumn">
-    <div class="box-cloumn-container" :active="isActive">
-      <div class="box-cloumn__title text-center">
+  <div class="schedule-view-box box-column">
+    <div class="box-column-container" :active="isActive">
+      <div class="box-column__title text-center">
         <div>{{ formattedWeekDay }}</div>
         <div>{{ formattedDate }}</div>
       </div>
-      <div class="box-cloumn__content text-center">
-        <time-list v-for="(time, key) in schedule" :key="key" :time="time" />
+      <div class="box-column__content text-center">
+        <template v-if="isActive">
+          <time-list v-for="(time, key) in schedule" :key="key" :time="time" />
+        </template>
       </div>
     </div>
   </div>
@@ -14,6 +16,7 @@
 
 <script>
 import TimeList from '../../units/TimeList';
+import { getDateWithoutTime } from './helper.js'
 
 export default {
   name: "ScheduleViewBox",
@@ -24,7 +27,11 @@ export default {
   },
   computed: {
     formattedWeekDay() {
-      return "日一二三四五六".split("")[this.date.getDay()];
+      let weekDay = [
+        'sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'
+      ][this.date.getDay()];
+
+      return this.$i18n.t(`weeks.${weekDay}`);
     },
     formattedDate() {
       let date = this.date.getDate();
@@ -32,36 +39,8 @@ export default {
     },
     isActive() {
       let today = new Date();
-      return (
-        this.date >
-        new Date(today.getFullYear(), today.getMonth(), today.getDate())
-      );
+      return this.date >= getDateWithoutTime(today)
     }
   },
 };
 </script>
-
-<style lang="less">
-.box-cloumn {
-  flex: 1;
-  padding: 0 5px;
-}
-.box-cloumn-container {
-  border-top: 4px solid #d2d2d2;
-  .box-cloumn__title {
-    color: #d2d2d2;
-  }
-}
-.box-cloumn-container[active] {
-  border-top: 4px solid #02cab9;
-  .box-cloumn__title {
-    color: #484848;
-  }
-}
-.box-cloumn__title {
-  padding: 10px 0;
-}
-.text-center {
-  text-align: center;
-}
-</style>

@@ -31,6 +31,7 @@ export default {
   padding: 3px 0;
   border: 1px solid transparent;
   color: #b6b6b6;
+  font-size: .75rem;
 }
 
 .available {

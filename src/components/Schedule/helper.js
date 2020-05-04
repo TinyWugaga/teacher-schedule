@@ -67,16 +67,19 @@ export function isSameDay(timeA, timeB) {
  */
 export function getWeeksByDate(currentDate) {
 
+    console.log('cd: ', currentDate);
+    let firstDayOfWeek = getFirstDayOfWeek(currentDate);
+    console.log('firstDayOfWeek: ',firstDayOfWeek );
     let weeks = Array(7)
         .fill(null)
         .map((n, dayIndex) => {
 
-            //今日日期 - (計算週期-今日週期)
-            let dateOfDay = getDateWithoutTime(new Date);
-            let date = currentDate.getDate() + (dayIndex - currentDate.getDay());
-            dateOfDay.setDate(date);
+            let dateOfDay = getDateWithoutTime(currentDate)
+            //週期日期 = 當週第一天 + 計算週期
+            dateOfDay.setDate(firstDayOfWeek.getDate() + dayIndex);
 
             return dateOfDay
+            
         });
     return weeks
 }

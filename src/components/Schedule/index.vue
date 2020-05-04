@@ -53,7 +53,6 @@ export default {
     this.fetch();
 
     let lang = new URLSearchParams(location.search).get('lang');
-    console.log(lang);
     if (lang) {
       setLocale(lang);
     }

@@ -74,9 +74,9 @@ export function getWeeksByDate(currentDate) {
         .fill(null)
         .map((n, dayIndex) => {
 
-            let dateOfDay = getDateWithoutTime(currentDate)
-            //週期日期 = 當週第一天 + 計算週期
-            dateOfDay.setDate(firstDayOfWeek.getDate() + dayIndex);
+            let dateOfDay = getDateWithoutTime(currentDate);
+            //週期日期 = 當日日期 + （計算週期 - 當日週期）
+            dateOfDay.setDate(currentDate.getDate() + (dayIndex - currentDate.getDay()));
 
             return dateOfDay
             

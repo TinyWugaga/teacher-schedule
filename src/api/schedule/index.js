@@ -1,4 +1,5 @@
 import deepmerge from 'deepmerge';
+import { getCurrentData } from './mockData';
 
 // =============================================================================
 // = Initialization
@@ -28,7 +29,7 @@ export function fetch(query = {}) {
 
   return new Promise((resolve, reject) => {
     console.log(reject);
-    let { available, booked } = storage;
+    let { available, booked } = getCurrentData() // storage
 
     available = available.filter((period) => isPeriodInRange(period, startAt, endAt));
     booked = booked.filter((period) => isPeriodInRange(period, startAt, endAt));

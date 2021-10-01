@@ -6,12 +6,12 @@ function getRandomTimeList(date) {
 
     if (hour) availableTime.push({
         0: hour >= 8 ? hour : hour + 6,
-        1: 30 * (date.getDay() - 1 || date.getDay() + 1)
+        1: 30 * (date.getDay() <= 1 ? date.getDay() + 1 : date.getDay())
     })
 
     availableTime.push({
         0: hour >= 16 ? hour - 6 : hour + 8,
-        1: 30 * (date.getDay() - 1 || date.getDay() + 1)
+        1: 30 * (date.getDay() <= 1 ? date.getDay() + 1 : date.getDay())
     })
 
     return {

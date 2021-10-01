@@ -6,12 +6,12 @@ function getRandomTimeList(date) {
 
     if (hour) availableTime.push({
         0: hour >= 8 ? hour : hour + 6,
-        1: 30 * Math.floor(Math.random() * 4)
+        1: 30 * (date.getDay() - 1 || date.getDay() + 1)
     })
 
     availableTime.push({
         0: hour >= 16 ? hour - 6 : hour + 8,
-        1: 30 * (Math.floor(Math.random() * 5) || 1)
+        1: 30 * (date.getDay() - 1 || date.getDay() + 1)
     })
 
     return {
@@ -19,7 +19,7 @@ function getRandomTimeList(date) {
         bookedTime: [
             {
                 0: availableTime[0][0] + 4,
-                1: 30 * (Math.floor(Math.random() * 3) || 1)
+                1: 30 * (Math.floor(date.getDay() / 2) || 1)
             }
         ]
     }
